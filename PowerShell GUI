@@ -1,0 +1,65 @@
+function form{
+Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Drawing
+[System.Windows.Forms.Application]::EnableVisualStyles()
+$Form1 = New-Object System.Windows.Forms.Form
+$Form1.ClientSize = New-Object System.Drawing.Size(300, 300)
+$form1.topmost = $true
+
+$items= Get-Content -path "D:\Porjects\pwoershell\test.txt" 
+$comboBox1 = New-Object System.Windows.Forms.ComboBox
+$comboBox1.Location = New-Object System.Drawing.Point(25, 55)
+$comboBox1.Size = New-Object System.Drawing.Size(75, 75)
+foreach ($item in $items) {$comboBox1.Items.add($item)|Out-Null}
+$Form1.Controls.Add($comboBox1)|Out-Null
+# -------------------------------------------------------------------------------
+#                             Change triggered function
+# -------------------------------------------------------------------------------
+ 
+$ComboBox1_SelectedIndexChanged=
+{
+  switch ($ComboBox1.text) {
+   "Remote2Office"  {Set-Clipboard -Value "Assign pc and user to Remote2office"| Get-Clipboard}
+   "test"   {Set-Clipboard -Value "We found a pear"| Get-Clipboard}
+   "test1" {Set-Clipboard -Value "We found an orange"| Get-Clipboard}
+   "peach"  {Set-Clipboard -Value "We found a peach"| Get-Clipboard}
+   "banana" {Set-Clipboard -Value "We found a banana"| Get-Clipboard} 
+    }
+}
+
+################ MUST CREATE BEFORE ASSIGN ################
+$ComboBox1.add_SelectedIndexChanged($ComboBox1_SelectedIndexChanged) |Out-Null
+
+
+$items1= Get-Content -path "D:\Porjects\pwoershell\test1.txt" 
+$comboBox2 = New-Object System.Windows.Forms.ComboBox
+$comboBox2.Location = New-Object System.Drawing.Point(55, 75)
+$comboBox2.Size = New-Object System.Drawing.Size(75, 75)
+foreach ($item1 in $items1) {$comboBox2.Items.add($item1)|Out-Null}
+$Form1.Controls.Add($comboBox2)
+ 
+# -------------------------------------------------------------------------------
+#                             Change triggered function
+# -------------------------------------------------------------------------------
+ 
+$ComboBox2_SelectedIndexChanged=
+{
+  switch ($ComboBox2.text) {
+   "Folder"  {new-folder}
+   "test"   {Set-Clipboard -Value "We found a pear"| Get-Clipboard}
+   "test1" {Set-Clipboard -Value "We found an orange"| Get-Clipboard}
+   "peach"  {Set-Clipboard -Value "We found a peach"| Get-Clipboard}
+   "banana" {Set-Clipboard -Value "We found a banana"| Get-Clipboard} 
+    }
+}
+################ MUST CREATE BEFORE ASSIGN ################
+$ComboBox2.add_SelectedIndexChanged($ComboBox2_SelectedIndexChanged) |Out-Null
+ 
+$form1.showdialog() |Out-Null
+}
+
+function new-folder {  
+$Path = Read-Host "Path"
+$foldername= Read-Host "Folder Name"
+New-item -path $path -Name $foldername -itemtype Directory #this creates the folder
+} 
